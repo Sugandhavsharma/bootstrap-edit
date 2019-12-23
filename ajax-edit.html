@@ -1,0 +1,97 @@
+<html>
+	<head>
+		<title>Edit page</title>
+
+		<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> 
+	</head>
+	<body>
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  		<a class="navbar-brand" href="#">SSS</a>
+  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls	="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    		<span class="navbar-toggler-icon"></span>
+  		</button>
+  		<div class="collapse navbar-collapse" id="navbarNav">
+    		<ul class="navbar-nav">
+      	<li class="nav-item active">
+        	<a class="nav-link" href="#">HOME <span class="sr-only">(current)</span></a>
+      	</li>
+     	 <li class="nav-item">
+        	<a class="nav-link" href="#">ABOUT</a>
+      	</li>
+   		 </ul>
+  		</div>
+		</nav>
+		<div class="container col-md-4" >
+		<h2 align="center">UPDATE YOUR EMPLOYEE DETAILS</h2><br>
+		<form method="POST">
+			Employee id:  <input class="form-control form-control-lg" type="text" id="id" placeholder="Enter your employee id" ><br><br>
+			Employee Name:<input class="form-control form-control-lg" type="text" id="name" placeholder="Enter your employee name" ><br><br>
+			Employee Salary:
+			<div class="input-group mb-3">
+  			<div class="input-group-prepend">
+   			 <span class="input-group-text">Rs.</span>
+  			</div>
+  			<input class="form-control form-control-lg" type="text"  id="salary" placeholder="Enter your salary">
+  			<div class="input-group-append">
+    		<span class="input-group-text">.00</span>
+  			</div>
+			</div><br><br>
+			Employee age:<input class="form-control form-control-lg" type="text"  id="age" placeholder="Enter your age"><br><br>
+			<button class="btn btn-primary col-md-4" id="btn-update">UPDATE DATA</button>
+		</form>
+		<script>
+			$(function()
+			{
+				var url_string = window.location.href;
+				var url = new URL(url_string);
+				var empId = url.searchParams.get("data_id");
+				console.log(empId);
+				getEmpDetails(empId);
+				bindclick();
+			});
+			function getEmpDetails(empId)
+			{
+				$.ajax({
+					type: 'GET',
+					url: 'http://dummy.restapiexample.com/api/v1/employee/'+empId,
+					success: function(result)
+					{
+						console.log(result);
+						var resultString = JSON.parse(result);
+						$('#id').val(resultString.id);
+						$('#name').val(resultString.employee_name);
+						$('#salary').val(resultString.employee_salary);
+						$('#age').val(resultString.employee_age);
+					}
+				});
+			}
+			function bindclick()
+			{
+				$('#btn-update').unbind('click').bind('click',function(e)
+				{
+					e.preventDefault();
+					var result={}
+					var id= $('#id').val();
+					result.name = $('#name').val();
+					result.salary = $('#salary').val();
+					result.age = $('#age').val();
+
+					$.ajax({
+						type:'PUT',
+						url:'http://dummy.restapiexample.com/api/v1/update/'+id,
+						data:JSON.stringify(result),
+						success: function(result)
+						{
+							console.log(result);
+							
+							window.location.href = "file:///C:/Users/User/Desktop/sugandha/ajax-display.html";
+						}	
+					})
+					console.log(result);
+				})
+			}
+		</script>
+	</body>
+</html>
